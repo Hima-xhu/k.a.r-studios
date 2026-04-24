@@ -1,1475 +1,661 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KAR Studios — Video Editing, Design & Content Agency</title>
-<meta name="description" content="KAR Studios is a full-service visual & media agency offering cinematic video editing, graphic design, social media management, content strategy, and event media coverage.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --black: #060608;
-  --dark: #0e0e12;
-  --panel: #13131a;
-  --border: rgba(255,255,255,0.08);
-  --white: #f4f2ee;
-  --muted: rgba(244,242,238,0.45);
-  --dim: rgba(244,242,238,0.18);
-  --accent: #e8ff47;
-  --hot: #ff3c3c;
-  --cool: #3caaff;
-  --serif: 'Libre Baskerville', Georgia, serif;
-  --display: 'Bebas Neue', Impact, sans-serif;
-  --sans: 'Syne', system-ui, sans-serif;
-}
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--black);
-  color: var(--white);
-  font-family: var(--sans);
-  overflow-x: hidden;
-  cursor: none;
-}
-
-/* ── CURSOR (desktop only) ── */
-#cur, #cur-ring { display: none; }
-@media (pointer: fine) {
-  #cur {
-    display: block; position: fixed; width: 8px; height: 8px;
-    background: var(--accent); border-radius: 50%;
-    pointer-events: none; z-index: 9999;
-    transform: translate(-50%,-50%);
-    transition: width .15s, height .15s;
-  }
-  #cur-ring {
-    display: block; position: fixed; width: 36px; height: 36px;
-    border: 1px solid var(--accent); border-radius: 50%;
-    pointer-events: none; z-index: 9998;
-    transform: translate(-50%,-50%);
-    transition: all .1s ease-out; opacity: .35;
-  }
-  body { cursor: none; }
-  body:has(a:hover) #cur, body:has(button:hover) #cur { width: 18px; height: 18px; }
-  body:has(a:hover) #cur-ring, body:has(button:hover) #cur-ring { width: 56px; height: 56px; opacity: .6; }
-}
-
-/* ── NAV ── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  padding: 1.6rem 2.5rem;
-  display: flex; align-items: center; justify-content: space-between;
-  transition: padding .3s, background .3s;
-}
-nav.scrolled { background: rgba(6,6,8,.97); padding: 1rem 2.5rem; }
-nav::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(6,6,8,.95) 40%, transparent);
-  pointer-events: none;
-}
-.nav-logo {
-  font-family: var(--display); font-size: 2rem; letter-spacing: 0.06em;
-  color: var(--white); text-decoration: none; z-index: 1; position: relative;
-}
-.nav-logo span { color: var(--accent); }
-.nav-links { display: flex; gap: 2rem; list-style: none; position: relative; z-index: 1; }
-.nav-links a {
-  font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--muted); text-decoration: none; transition: color .2s;
-}
-.nav-links a:hover { color: var(--accent); }
-.nav-cta {
-  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--black); background: var(--accent);
-  padding: .6rem 1.4rem; text-decoration: none;
-  font-weight: 700; transition: background .2s; position: relative; z-index: 1;
-}
-.nav-cta:hover { background: var(--white); }
-/* mobile hamburger */
-.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1; position: relative; background: none; border: none; padding: 4px; }
-.nav-toggle span { display: block; width: 24px; height: 1px; background: var(--white); transition: all .3s; }
-.nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
-.nav-toggle.open span:nth-child(2) { opacity: 0; }
-.nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
-
-/* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 0 2.5rem 4rem;
-  position: relative; overflow: hidden;
-}
-.hero-canvas { position: absolute; inset: 0; background: var(--black); overflow: hidden; }
-.hero-canvas::after {
-  content: ''; position: absolute; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: .4; pointer-events: none; z-index: 2;
-}
-.orb {
-  position: absolute; border-radius: 50%;
-  will-change: transform; animation: orbpulse 10s ease-in-out infinite;
-}
-.o1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(232,255,71,.15) 0%, transparent 70%); top: -100px; right: -100px; filter: blur(80px); }
-.o2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,60,60,.12) 0%, transparent 70%); bottom: 100px; left: 200px; filter: blur(80px); animation-delay: -4s; }
-.o3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(60,170,255,.1) 0%, transparent 70%); top: 40%; right: 30%; filter: blur(80px); animation-delay: -7s; }
-@keyframes orbpulse {
-  0%,100% { transform: scale(1) translate(0,0); opacity: .7; }
-  50% { transform: scale(1.15) translate(20px,-20px); opacity: 1; }
-}
-.scan-line {
-  position: absolute; left: 0; right: 0; height: 1px;
-  background: linear-gradient(to right, transparent, var(--accent), transparent);
-  opacity: .2; animation: scan 8s linear infinite;
-}
-@keyframes scan { from { top: -1px; } to { top: 100%; } }
-.film-strip { position: absolute; top: 0; right: 6rem; bottom: 0; width: 60px; opacity: .04; display: flex; flex-direction: column; }
-.film-hole { flex: 1; border: 1px solid var(--white); margin: 4px 8px; border-radius: 2px; }
-
-.hero-content { position: relative; z-index: 10; max-width: 960px; }
-.hero-eyebrow {
-  display: flex; align-items: center; gap: 1rem;
-  font-size: .65rem; letter-spacing: .25em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 1.5rem;
-}
-.hero-eyebrow::before { content: ''; display: block; width: 30px; height: 1px; background: var(--accent); }
-
-.hero-title {
-  font-family: var(--display);
-  font-size: clamp(4.5rem, 11vw, 13rem);
-  line-height: .88; letter-spacing: .01em;
-  color: var(--white); margin-bottom: 2.5rem;
-}
-.hero-title .line2 { -webkit-text-stroke: 1px rgba(244,242,238,.3); color: transparent; }
-.hero-title .line3 { color: var(--accent); }
-
-.hero-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 3rem; }
-.hero-desc { max-width: 420px; font-size: .95rem; line-height: 1.8; color: var(--muted); }
-.hero-desc strong { color: var(--white); font-weight: 700; }
-.hero-actions { display: flex; gap: 1.2rem; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
-
-.btn-lime {
-  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
-  color: var(--black); background: var(--accent);
-  padding: .95rem 2rem; text-decoration: none; display: inline-block;
-  transition: all .2s; white-space: nowrap; position: relative; overflow: hidden;
-}
-.btn-lime::after {
-  content: ''; position: absolute; inset: 0;
-  background: var(--white); transform: scaleX(0); transform-origin: right;
-  transition: transform .3s ease; z-index: 0;
-}
-.btn-lime:hover::after { transform: scaleX(1); transform-origin: left; }
-.btn-lime span { position: relative; z-index: 1; }
-.btn-ghost {
-  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--white); border: 1px solid var(--border);
-  padding: .95rem 2rem; text-decoration: none; display: inline-block;
-  transition: all .2s; white-space: nowrap;
-}
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-
-.scroll-hint {
-  position: absolute; bottom: 2rem; right: 2.5rem; z-index: 10;
-  display: flex; flex-direction: column; align-items: center; gap: .5rem;
-}
-.scroll-line { width: 1px; height: 50px; background: var(--dim); position: relative; overflow: hidden; }
-.scroll-line::after {
-  content: ''; position: absolute; top: -100%; left: 0; right: 0; height: 50%;
-  background: var(--accent); animation: scrolldown 1.8s ease-in-out infinite;
-}
-@keyframes scrolldown { from { top: -50%; } to { top: 100%; } }
-.scroll-label { font-size: .55rem; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); writing-mode: vertical-rl; }
-
-/* ── BENEFITS STRIP ── */
-.benefits {
-  background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-  padding: 2rem 2.5rem;
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-}
-.benefit-item {
-  display: flex; align-items: center; gap: 1rem;
-  padding: 0 2rem; border-right: 1px solid var(--border);
-}
-.benefit-item:first-child { padding-left: 0; }
-.benefit-item:last-child { border-right: none; }
-.benefit-icon {
-  width: 36px; height: 36px; flex-shrink: 0;
-  border: 1px solid rgba(232,255,71,.3); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .9rem;
-}
-.benefit-text {}
-.benefit-title { font-family: var(--display); font-size: 1rem; letter-spacing: .06em; color: var(--accent); line-height: 1; }
-.benefit-sub { font-size: .68rem; letter-spacing: .08em; color: var(--muted); margin-top: 2px; }
-
-/* ── TICKER ── */
-.ticker { background: var(--accent); padding: .8rem 0; overflow: hidden; white-space: nowrap; }
-.ticker-track { display: inline-flex; animation: tick 22s linear infinite; }
-.tick-item { font-family: var(--display); font-size: 1.1rem; letter-spacing: .06em; color: var(--black); padding: 0 1.5rem; }
-.tick-sep { color: rgba(0,0,0,.3); }
-@keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-/* ── REEL / ABOUT ── */
-.reel { padding: 6rem 2.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
-.section-tag {
-  font-size: .65rem; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 1.2rem;
-  display: flex; align-items: center; gap: .8rem;
-}
-.section-tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); }
-.reel-heading {
-  font-family: var(--display);
-  font-size: clamp(3rem, 5vw, 5.5rem);
-  line-height: .9; letter-spacing: .02em; margin-bottom: 1.5rem;
-}
-.reel-heading em { color: var(--accent); font-style: normal; }
-.reel-body { font-size: .9rem; line-height: 1.85; color: var(--muted); margin-bottom: 1.2rem; }
-.reel-body strong { color: var(--white); }
-.reel-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; border-top: 1px solid var(--border); padding-top: 2rem; margin-top: 2rem; }
-.rs-num { font-family: var(--display); font-size: 2.8rem; line-height: 1; color: var(--accent); }
-.rs-label { font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: .3rem; }
-.reel-right { position: relative; }
-
-/* Video modal */
-.reel-visual {
-  background: var(--panel); border: 1px solid var(--border);
-  aspect-ratio: 16/10; position: relative; overflow: hidden; cursor: pointer;
-}
-.reel-visual-inner {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column; gap: 1rem;
-}
-.play-btn {
-  width: 80px; height: 80px; border-radius: 50%;
-  border: 2px solid var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  transition: all .25s; z-index: 2; cursor: pointer;
-}
-.play-btn:hover { background: var(--accent); transform: scale(1.1); }
-.play-btn:hover .play-tri { border-left-color: var(--black); }
-.play-tri {
-  width: 0; height: 0;
-  border-top: 14px solid transparent; border-bottom: 14px solid transparent;
-  border-left: 22px solid var(--accent); margin-left: 4px;
-  transition: border-left-color .25s;
-}
-.play-hint { font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
-.reel-bg-art {
-  position: absolute; inset: 0; opacity: .15;
-  background: repeating-linear-gradient(90deg, var(--accent) 0, var(--accent) 1px, transparent 1px, transparent 60px),
-              repeating-linear-gradient(0deg, var(--accent) 0, var(--accent) 1px, transparent 1px, transparent 60px);
-}
-.reel-label {
-  position: absolute; bottom: 1rem; left: 1rem;
-  font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
-  color: var(--accent); background: rgba(6,6,8,.85); padding: .3rem .7rem;
-}
-.reel-badge {
-  position: absolute; top: -1.2rem; right: -1.2rem;
-  background: var(--hot); color: var(--white);
-  width: 100px; height: 100px; border-radius: 50%;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  font-family: var(--display); font-size: 1rem; letter-spacing: .06em;
-  text-align: center; line-height: 1.2; animation: spin 12s linear infinite;
-  pointer-events: none;
-}
-.reel-badge span { font-size: .55rem; letter-spacing: .15em; text-transform: uppercase; }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-/* Video lightbox */
-.lightbox {
-  display: none; position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0,0,0,.95); align-items: center; justify-content: center;
-}
-.lightbox.active { display: flex; }
-.lightbox-inner { position: relative; width: 90vw; max-width: 960px; aspect-ratio: 16/9; }
-.lightbox-inner iframe { width: 100%; height: 100%; border: none; }
-.lightbox-close {
-  position: absolute; top: -2.5rem; right: 0;
-  font-family: var(--display); font-size: 1.5rem; letter-spacing: .1em;
-  color: var(--muted); cursor: pointer; background: none; border: none;
-  transition: color .2s;
-}
-.lightbox-close:hover { color: var(--accent); }
-
-/* ── SERVICES ── */
-.services { padding: 5rem 2.5rem; background: var(--dark); }
-.services-header {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  margin-bottom: 3.5rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem;
-}
-.services-title { font-family: var(--display); font-size: clamp(2.8rem, 5vw, 5rem); line-height: .9; letter-spacing: .02em; }
-.services-title em { color: var(--accent); font-style: normal; }
-.services-intro { max-width: 320px; font-size: .875rem; line-height: 1.7; color: var(--muted); }
-.services-list { display: flex; flex-direction: column; }
-.svc-row {
-  display: grid; grid-template-columns: 60px 1fr 1fr auto;
-  align-items: center; gap: 2rem;
-  padding: 1.8rem 0; border-bottom: 1px solid var(--border);
-  transition: all .25s; position: relative; overflow: hidden;
-}
-.svc-row::before {
-  content: ''; position: absolute; inset: 0;
-  background: var(--panel); transform: translateX(-100%);
-  transition: transform .35s ease; z-index: 0;
-}
-.svc-row:hover::before { transform: translateX(0); }
-.svc-row > * { position: relative; z-index: 1; }
-.svc-num { font-family: var(--display); font-size: 1rem; color: var(--dim); letter-spacing: .08em; }
-.svc-name { font-family: var(--display); font-size: clamp(1.5rem, 2.5vw, 2.2rem); letter-spacing: .04em; transition: color .25s; }
-.svc-row:hover .svc-name { color: var(--accent); }
-.svc-right { display: flex; flex-direction: column; gap: .5rem; }
-.svc-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
-.svc-tag {
-  font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
-  border: 1px solid var(--border); padding: .25rem .6rem;
-  color: var(--muted); border-radius: 2px; transition: all .25s;
-}
-.svc-row:hover .svc-tag { border-color: rgba(232,255,71,.3); color: var(--accent); }
-.svc-price {
-  font-family: var(--display); font-size: .85rem; letter-spacing: .06em;
-  color: rgba(232,255,71,.5); transition: color .25s;
-}
-.svc-row:hover .svc-price { color: var(--accent); }
-.svc-arrow {
-  font-size: 1.2rem; color: var(--dim); transition: all .25s;
-  width: 36px; height: 36px; border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.svc-row:hover .svc-arrow { color: var(--accent); border-color: var(--accent); transform: rotate(45deg); }
-
-/* ── WORK ── */
-.work { padding: 6rem 2.5rem; }
-.work-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3rem; }
-.work-title { font-family: var(--display); font-size: clamp(2.5rem, 4.5vw, 5rem); letter-spacing: .02em; line-height: .9; }
-.work-title em { color: var(--accent); font-style: normal; }
-.work-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
-.wc { position: relative; overflow: hidden; background: var(--panel); }
-.wc-a { grid-column: span 7; aspect-ratio: 16/9; }
-.wc-b { grid-column: span 5; aspect-ratio: 4/3; }
-.wc-c { grid-column: span 5; aspect-ratio: 4/3; }
-.wc-d { grid-column: span 7; aspect-ratio: 16/9; }
-.wc-inner {
-  position: absolute; inset: 0;
-  display: flex; align-items: flex-end; padding: 1.5rem;
-  background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 60%);
-  transition: background .3s;
-}
-.wc:hover .wc-inner { background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.25) 100%); }
-.wc-art { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.25,.46,.45,.94); }
-.wc:hover .wc-art { transform: scale(1.06); }
-.art-a { background: linear-gradient(135deg, #0a0a12 0%, #1a0030 40%, #300060 100%); display: flex; align-items: center; justify-content: center; }
-.art-b { background: linear-gradient(135deg, #120800 0%, #2a1400 50%, #3d1f00 100%); }
-.art-c { background: linear-gradient(135deg, #000d1a 0%, #002040 50%, #003366 100%); }
-.art-d { background: linear-gradient(135deg, #0d0a00 0%, #1a1400 50%, #2a2000 100%); }
-.wc-cat { font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
-.wc-name { font-family: var(--display); font-size: 1.5rem; letter-spacing: .04em; line-height: 1; }
-.wc-sub { font-size: .75rem; color: var(--muted); margin-top: .3rem; }
-/* hover overlay CTA */
-.wc-overlay {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity .3s;
-}
-.wc:hover .wc-overlay { opacity: 1; }
-.wc-view-btn {
-  font-family: var(--display); font-size: .9rem; letter-spacing: .12em;
-  color: var(--black); background: var(--accent);
-  padding: .6rem 1.4rem; text-decoration: none;
-  transform: translateY(8px); transition: transform .3s;
-}
-.wc:hover .wc-view-btn { transform: translateY(0); }
-.card-svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .25; }
-
-/* ── PROCESS ── */
-.process { padding: 6rem 2.5rem; background: var(--dark); }
-.process-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
-.process-steps { display: flex; flex-direction: column; gap: 0; margin-top: 2.5rem; }
-.ps {
-  display: grid; grid-template-columns: 48px 1fr;
-  gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border);
-  transition: all .25s;
-}
-.ps:hover { padding-left: .5rem; }
-.ps-num { font-family: var(--display); font-size: 2rem; color: var(--dim); line-height: 1; transition: color .25s; }
-.ps:hover .ps-num { color: var(--accent); }
-.ps-name { font-family: var(--sans); font-weight: 700; font-size: 1.05rem; margin-bottom: .4rem; transition: color .25s; }
-.ps:hover .ps-name { color: var(--accent); }
-.ps-desc { font-size: .82rem; line-height: 1.7; color: var(--muted); }
-.process-right { position: sticky; top: 6rem; }
-.process-visual {
-  background: var(--panel); border: 1px solid var(--border);
-  padding: 2.5rem; aspect-ratio: 1;
-  display: flex; flex-direction: column; justify-content: center;
-  align-items: center; gap: 1.5rem; position: relative; overflow: hidden;
-}
-.pv-ring {
-  border-radius: 50%; border: 1px solid var(--border);
-  position: absolute; animation: ringpulse 4s ease-in-out infinite;
-}
-.pv-r1 { width: 80%; height: 80%; border-color: rgba(232,255,71,.08); animation-delay: 0s; }
-.pv-r2 { width: 60%; height: 60%; border-color: rgba(232,255,71,.12); animation-delay: -.8s; }
-.pv-r3 { width: 40%; height: 40%; border-color: rgba(232,255,71,.2); animation-delay: -1.6s; }
-.pv-center {
-  width: 80px; height: 80px; background: var(--accent); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--display); font-size: 1.8rem; color: var(--black);
-  position: relative; z-index: 2;
-}
-@keyframes ringpulse { 0%,100% { transform: scale(1); opacity: .7; } 50% { transform: scale(1.05); opacity: 1; } }
-.pv-label { font-family: var(--display); font-size: 1.3rem; letter-spacing: .08em; color: var(--accent); position: relative; z-index: 2; text-align: center; }
-.pv-sub { font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); position: relative; z-index: 2; }
-
-/* ── TESTIMONIALS ── */
-.testimonials { padding: 6rem 2.5rem; position: relative; overflow: hidden; }
-.testimonials::before {
-  content: '"'; position: absolute; top: -2rem; left: 1rem;
-  font-family: var(--display); font-size: 30rem; color: rgba(232,255,71,.03);
-  line-height: 1; pointer-events: none;
-}
-.testimonials-header { text-align: center; margin-bottom: 3.5rem; }
-.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; position: relative; z-index: 1; }
-.test-card {
-  background: var(--panel); border: 1px solid var(--border);
-  padding: 2rem; transition: border-color .25s;
-}
-.test-card:hover { border-color: rgba(232,255,71,.25); }
-.test-stars { color: var(--accent); font-size: .9rem; letter-spacing: .1em; margin-bottom: 1.2rem; }
-.test-quote {
-  font-family: var(--serif); font-size: .95rem; font-style: italic;
-  line-height: 1.65; color: var(--white); margin-bottom: 1.5rem;
-}
-.test-author { display: flex; align-items: center; gap: .75rem; }
-.test-avatar {
-  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--display); font-size: 1rem; color: var(--white);
-}
-.av-red { background: var(--hot); }
-.av-lime { background: #7a8c00; }
-.av-blue { background: var(--cool); color: var(--black); }
-.test-name { font-weight: 700; font-size: .85rem; }
-.test-handle { font-size: .7rem; color: var(--accent); margin-top: 1px; }
-.test-role { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-
-/* clients */
-.clients { padding: 3rem 2.5rem 5rem; border-top: 1px solid var(--border); }
-.clients-label { font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 2rem; }
-.clients-row { display: flex; gap: 0; justify-content: center; flex-wrap: wrap; }
-.client-item {
-  font-family: var(--display); font-size: 1.4rem; letter-spacing: .08em;
-  color: var(--dim); padding: 1rem 2rem; border: 1px solid var(--border);
-  transition: all .25s; margin: -1px 0 0 -1px;
-}
-.client-item:hover { color: var(--accent); border-color: rgba(232,255,71,.3); background: var(--panel); }
-
-/* ── CONTACT ── */
-.contact-section {
-  padding: 6rem 2.5rem; background: var(--dark);
-  display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;
-}
-.contact-left {}
-.contact-heading {
-  font-family: var(--display);
-  font-size: clamp(3rem, 5vw, 5.5rem);
-  line-height: .9; letter-spacing: .02em; margin-bottom: 1.5rem;
-}
-.contact-heading em { color: var(--accent); font-style: normal; }
-.contact-body { font-size: .9rem; line-height: 1.8; color: var(--muted); margin-bottom: 2rem; }
-.contact-info { display: flex; flex-direction: column; gap: 1rem; }
-.contact-info-item { display: flex; align-items: center; gap: .75rem; }
-.ci-label { font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); min-width: 60px; }
-.ci-val { font-size: .875rem; color: var(--white); text-decoration: none; }
-.ci-val:hover { color: var(--accent); }
-
-/* form */
-.contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
-.form-group { display: flex; flex-direction: column; gap: .4rem; }
-.form-label { font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
-.form-input, .form-select, .form-textarea {
-  background: var(--panel); border: 1px solid var(--border);
-  color: var(--white); font-family: var(--sans); font-size: .875rem;
-  padding: .85rem 1rem; outline: none;
-  transition: border-color .2s;
-  -webkit-appearance: none; appearance: none;
-}
-.form-input::placeholder, .form-textarea::placeholder { color: var(--dim); }
-.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
-.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23e8ff47' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
-.form-select option { background: var(--dark); }
-.form-textarea { resize: vertical; min-height: 120px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-.btn-submit {
-  font-family: var(--display); font-size: 1rem; letter-spacing: .1em;
-  color: var(--black); background: var(--accent);
-  border: none; padding: 1rem 2rem; cursor: pointer;
-  transition: background .2s; text-align: left;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  margin-top: .5rem;
-}
-.btn-submit:hover { background: var(--white); }
-.btn-submit-arrow { font-size: 1.2rem; transition: transform .2s; }
-.btn-submit:hover .btn-submit-arrow { transform: translateX(4px); }
-.form-note { font-size: .68rem; letter-spacing: .08em; color: var(--dim); }
-
-/* form success */
-.form-success {
-  display: none; text-align: center; padding: 3rem;
-  border: 1px solid rgba(232,255,71,.3); background: rgba(232,255,71,.04);
-}
-.form-success.show { display: block; }
-.form-success-icon { font-family: var(--display); font-size: 3rem; color: var(--accent); margin-bottom: 1rem; }
-.form-success-msg { font-family: var(--display); font-size: 1.5rem; letter-spacing: .06em; color: var(--accent); margin-bottom: .5rem; }
-.form-success-sub { font-size: .85rem; color: var(--muted); }
-
-/* ── BIG CTA BANNER ── */
-.cta {
-  background: var(--accent); padding: 6rem 2.5rem;
-  display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center;
-}
-.cta-heading { font-family: var(--display); font-size: clamp(3rem, 6vw, 7rem); line-height: .88; letter-spacing: .01em; color: var(--black); }
-.cta-right { display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start; min-width: 280px; }
-.cta-body { font-size: .9rem; line-height: 1.7; color: rgba(0,0,0,.6); max-width: 300px; }
-.btn-dark {
-  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
-  color: var(--accent); background: var(--black);
-  padding: .9rem 2rem; text-decoration: none; display: inline-block; transition: background .2s;
-}
-.btn-dark:hover { background: #1a1a22; }
-.cta-contact { font-size: .75rem; color: rgba(0,0,0,.5); }
-.cta-contact a { color: var(--black); font-weight: 700; }
-
-/* ── FOOTER ── */
-footer { background: var(--dark); border-top: 1px solid var(--border); padding: 4rem 2.5rem 2rem; }
-.footer-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
-.footer-brand-name { font-family: var(--display); font-size: 2.5rem; letter-spacing: .06em; color: var(--white); margin-bottom: .75rem; }
-.footer-brand-name span { color: var(--accent); }
-.footer-tagline { font-size: .82rem; line-height: 1.7; color: var(--muted); }
-.footer-col-head { font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; }
-.footer-links { list-style: none; display: flex; flex-direction: column; gap: .65rem; }
-.footer-links a { font-size: .82rem; color: var(--muted); text-decoration: none; transition: color .2s; }
-.footer-links a:hover { color: var(--white); }
-.footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-.footer-copy { font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
-
-/* ── REVEAL ── */
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
-.reveal.up { opacity: 1; transform: none; }
-
-/* ── MOBILE ── */
-@media (max-width: 900px) {
-  .nav-links, .nav-cta { display: none; }
-  .nav-toggle { display: flex; }
-  .mobile-menu {
-    display: none; position: fixed; inset: 0; background: rgba(6,6,8,.98);
-    z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu a { font-family: var(--display); font-size: 2.5rem; letter-spacing: .08em; color: var(--white); text-decoration: none; transition: color .2s; }
-  .mobile-menu a:hover { color: var(--accent); }
-  .mobile-menu .m-cta { background: var(--accent); color: var(--black); padding: .8rem 2.5rem; font-size: 1.4rem; }
-
-  .hero { padding: 0 1.5rem 5rem; }
-  .hero-title { font-size: clamp(4rem, 16vw, 7rem); }
-  .hero-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
-  .hero-actions { flex-direction: column; align-items: flex-start; width: 100%; }
-  .btn-lime, .btn-ghost { width: 100%; text-align: center; }
-  .film-strip { display: none; }
-  .scroll-hint { display: none; }
-
-  .benefits { grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1.5rem; }
-  .benefit-item { padding: .75rem; border-right: none; border-bottom: 1px solid var(--border); flex-direction: column; align-items: flex-start; }
-  .benefit-item:nth-child(odd) { border-right: 1px solid var(--border); }
-  .benefit-item:nth-child(3), .benefit-item:nth-child(4) { border-bottom: none; }
-
-  .reel { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
-  .reel-badge { display: none; }
-  .reel-stats { grid-template-columns: repeat(3, 1fr); }
-
-  .services { padding: 4rem 1.5rem; }
-  .services-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .svc-row { grid-template-columns: 40px 1fr; gap: 1rem; }
-  .svc-right, .svc-arrow { display: none; }
-
-  .work { padding: 4rem 1.5rem; }
-  .work-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .wc-a, .wc-b, .wc-c, .wc-d { grid-column: span 1; aspect-ratio: 16/9; }
-
-  .process { padding: 4rem 1.5rem; }
-  .process-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .process-right { position: static; display: none; }
-
-  .testimonials { padding: 4rem 1.5rem; }
-  .testimonials-grid { grid-template-columns: 1fr; }
-
-  .contact-section { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
-  .form-row { grid-template-columns: 1fr; }
-
-  .cta { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 1.5rem; }
-  .cta-right { width: 100%; }
-  .btn-dark { width: 100%; text-align: center; }
-
-  footer { padding: 3rem 1.5rem 2rem; }
-  .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
-  .footer-bottom { flex-direction: column; text-align: center; }
-}
-
-@media (max-width: 500px) {
-  .benefits { grid-template-columns: 1fr; }
-  .benefit-item { border-right: none !important; }
-  .benefit-item:last-child { border-bottom: none; }
-  .footer-top { grid-template-columns: 1fr; }
-  .reel-stats { grid-template-columns: 1fr 1fr 1fr; }
-  nav { padding: 1.2rem 1.5rem; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAR Studios | Creative Studio for Content, Design, and Production</title>
+  <meta
+    name="description"
+    content="KAR Studios is a modern creative studio offering content production, design support, visual storytelling, and creative direction for brands and creators."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="./kar_studios_premium.css">
 </head>
 <body>
+  <header class="site-header" id="mainNav">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="KAR Studios home">KAR<span>.</span></a>
 
-<div id="cur"></div>
-<div id="cur-ring"></div>
+      <nav class="site-nav" id="siteNav" aria-label="Primary">
+        <a href="#services">Services</a>
+        <a href="#work">Featured Work</a>
+        <a href="#why">Why Choose Us</a>
+        <a href="#contact">Contact</a>
+      </nav>
 
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#about" onclick="closeMobile()">About</a>
-  <a href="#services" onclick="closeMobile()">Services</a>
-  <a href="#work" onclick="closeMobile()">Work</a>
-  <a href="#process" onclick="closeMobile()">Process</a>
-  <a href="#contact" onclick="closeMobile()">Contact</a>
-  <a href="#contact" class="m-cta" onclick="closeMobile()">Start Your Project</a>
-</div>
-
-<!-- NAV -->
-<nav id="mainNav">
-  <a href="#" class="nav-logo">KAR<span>.</span></a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#work">Work</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <a href="#contact" class="nav-cta">Start Your Project</a>
-  <button class="nav-toggle" id="navToggle" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-canvas">
-    <div class="orb o1"></div>
-    <div class="orb o2"></div>
-    <div class="orb o3"></div>
-    <div class="scan-line"></div>
-    <div class="film-strip">
-      <div class="film-hole"></div><div class="film-hole"></div>
-      <div class="film-hole"></div><div class="film-hole"></div>
-      <div class="film-hole"></div><div class="film-hole"></div>
-      <div class="film-hole"></div><div class="film-hole"></div>
-      <div class="film-hole"></div><div class="film-hole"></div>
-    </div>
-  </div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">KAR Studios — Video · Design · Content · Social</div>
-    <h1 class="hero-title">
-      <div>EDIT.</div>
-      <div class="line2">DESIGN.</div>
-      <div class="line3">GROW.</div>
-    </h1>
-    <div class="hero-bottom">
-      <p class="hero-desc">We turn your vision into <strong>cinematic video content</strong>, scroll-stopping <strong>graphic design</strong>, and a <strong>social media presence</strong> that actually drives growth — all under one roof.</p>
-      <div class="hero-actions">
-        <a href="#contact" class="btn-lime"><span>Get Your First Edit →</span></a>
-        <a href="#work" class="btn-ghost">See Our Work</a>
+      <div class="header-actions">
+        <a class="nav-cta" href="#contact">Start a Project</a>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="siteNav"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </div>
-  </div>
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    <div class="scroll-label">Scroll</div>
-  </div>
-</section>
+  </header>
 
-<!-- BENEFITS STRIP -->
-<div class="benefits reveal">
-  <div class="benefit-item">
-    <div class="benefit-icon">⚡</div>
-    <div class="benefit-text">
-      <div class="benefit-title">Fast Turnaround</div>
-      <div class="benefit-sub">Edits delivered in 48–72 hrs</div>
-    </div>
-  </div>
-  <div class="benefit-item">
-    <div class="benefit-icon">🎬</div>
-    <div class="benefit-text">
-      <div class="benefit-title">Cinematic Quality</div>
-      <div class="benefit-sub">Pro-grade visuals every time</div>
-    </div>
-  </div>
-  <div class="benefit-item">
-    <div class="benefit-icon">📈</div>
-    <div class="benefit-text">
-      <div class="benefit-title">Growth Focused</div>
-      <div class="benefit-sub">Content built to convert</div>
-    </div>
-  </div>
-  <div class="benefit-item">
-    <div class="benefit-icon">🤝</div>
-    <div class="benefit-text">
-      <div class="benefit-title">Dedicated Support</div>
-      <div class="benefit-sub">Your brand, our priority</div>
-    </div>
-  </div>
-</div>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-backdrop" aria-hidden="true">
+        <div class="hero-orb hero-orb-a"></div>
+        <div class="hero-orb hero-orb-b"></div>
+        <div class="hero-grid-lines"></div>
+      </div>
 
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-track">
-    <span class="tick-item">Video Editing</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Graphic Design</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Content Management</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Social Media</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Event Media</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Brand Strategy</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Video Editing</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Graphic Design</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Content Management</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Social Media</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Event Media</span><span class="tick-item tick-sep">✦</span>
-    <span class="tick-item">Brand Strategy</span><span class="tick-item tick-sep">✦</span>
-  </div>
-</div>
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">KAR Studios / Content / Design / Production / Creative Support</p>
+          <h1>Creative content, visuals, and storytelling that make your brand stand out.</h1>
+          <p class="hero-text">
+            KAR Studios partners with creators, brands, and small teams to shape stronger content,
+            cleaner visuals, and polished creative work that feels intentional from concept to
+            final delivery.
+          </p>
 
-<!-- ABOUT / REEL -->
-<section class="reel" id="about">
-  <div class="reel-left reveal">
-    <div class="section-tag">Who we are</div>
-    <h2 class="reel-heading">Your brand<br>deserves to <em>dominate.</em></h2>
-    <p class="reel-body">Most brands create content. <strong>KAR Studios creates attention.</strong> We're a full-service visual and media agency — obsessed with making your brand impossible to scroll past.</p>
-    <p class="reel-body">From a single cinematic reel to a complete content ecosystem, we combine strategic thinking with relentless craft to deliver results that actually move the needle: <strong>more views, more followers, more conversions.</strong></p>
-    <div class="reel-stats">
-      <div><div class="rs-num">5+</div><div class="rs-label">Years active</div></div>
-      <div><div class="rs-num">200+</div><div class="rs-label">Projects done</div></div>
-      <div><div class="rs-num">80+</div><div class="rs-label">Happy clients</div></div>
-    </div>
-  </div>
-  <div class="reel-right reveal">
-    <div class="reel-visual" id="reelThumb" onclick="openReel()">
-      <div class="reel-bg-art"></div>
-      <div class="reel-visual-inner">
-        <div class="play-btn">
-          <div class="play-tri"></div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Start Your Project</a>
+            <a class="btn btn-secondary" href="#work">See Featured Work</a>
+          </div>
+
+          <div class="hero-points">
+            <div class="hero-point">
+              <span class="hero-point-label">Focus</span>
+              <strong>Content production, design systems, and social-ready delivery</strong>
+            </div>
+            <div class="hero-point">
+              <span class="hero-point-label">Approach</span>
+              <strong>Clear thinking, refined visuals, and direct collaboration</strong>
+            </div>
+          </div>
         </div>
-        <div class="play-hint">Watch our showreel</div>
-      </div>
-      <div class="reel-label">▶ KAR Studios — 2024 Showreel</div>
-    </div>
-    <div class="reel-badge">OUR<br>REEL<br><span>2024</span></div>
-  </div>
-</section>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <div class="lightbox-inner">
-    <button class="lightbox-close" onclick="closeReel()">✕ CLOSE</button>
-    <!-- Replace VIDEO_ID below with your actual YouTube video ID -->
-    <iframe id="reelFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-  </div>
-</div>
+        <div class="hero-visual reveal">
+          <div class="hero-stage">
+            <div class="stage-frame">
+              <div class="stage-topline">
+                <span>Studio Preview</span>
+                <span>16:9 / Editorial Layout</span>
+              </div>
+              <div class="stage-screen">
+                <div class="stage-screen-copy">
+                  <p>Creative direction</p>
+                  <h2>Stronger concepts, cleaner visuals, and more deliberate storytelling.</h2>
+                </div>
+              </div>
+              <div class="stage-timeline" aria-hidden="true">
+                <span class="timeline-track timeline-track-a"></span>
+                <span class="timeline-track timeline-track-b"></span>
+                <span class="timeline-track timeline-track-c"></span>
+                <span class="timeline-track timeline-track-d"></span>
+              </div>
+            </div>
 
-<!-- SERVICES -->
-<section class="services" id="services">
-  <div class="services-header reveal">
-    <div>
-      <div class="section-tag">What we do</div>
-      <h2 class="services-title">Our<br><em>services.</em></h2>
-    </div>
-    <p class="services-intro">Every service is delivered with cinematic precision, strategic intent, and a relentless drive for results that move the needle.</p>
-  </div>
-  <div class="services-list">
-    <div class="svc-row reveal">
-      <div class="svc-num">01</div>
-      <div class="svc-name">Video Editing</div>
-      <div class="svc-right">
-        <div class="svc-tags">
-          <span class="svc-tag">Reels</span>
-          <span class="svc-tag">Brand Films</span>
-          <span class="svc-tag">Colour Grading</span>
-          <span class="svc-tag">Motion Graphics</span>
-          <span class="svc-tag">Short-form</span>
-        </div>
-        <div class="svc-price">Starting from ₹999 / project</div>
-      </div>
-      <div class="svc-arrow">→</div>
-    </div>
-    <div class="svc-row reveal">
-      <div class="svc-num">02</div>
-      <div class="svc-name">Graphic Designing</div>
-      <div class="svc-right">
-        <div class="svc-tags">
-          <span class="svc-tag">Brand Identity</span>
-          <span class="svc-tag">Poster Design</span>
-          <span class="svc-tag">Thumbnails</span>
-          <span class="svc-tag">UI/UX</span>
-          <span class="svc-tag">Print</span>
-        </div>
-        <div class="svc-price">Starting from ₹499 / design</div>
-      </div>
-      <div class="svc-arrow">→</div>
-    </div>
-    <div class="svc-row reveal">
-      <div class="svc-num">03</div>
-      <div class="svc-name">Content Management</div>
-      <div class="svc-right">
-        <div class="svc-tags">
-          <span class="svc-tag">Content Strategy</span>
-          <span class="svc-tag">Scheduling</span>
-          <span class="svc-tag">Copywriting</span>
-          <span class="svc-tag">SEO</span>
-          <span class="svc-tag">Analytics</span>
-        </div>
-        <div class="svc-price">Starting from ₹2,999 / month</div>
-      </div>
-      <div class="svc-arrow">→</div>
-    </div>
-    <div class="svc-row reveal">
-      <div class="svc-num">04</div>
-      <div class="svc-name">Social Media Management</div>
-      <div class="svc-right">
-        <div class="svc-tags">
-          <span class="svc-tag">Instagram</span>
-          <span class="svc-tag">YouTube</span>
-          <span class="svc-tag">LinkedIn</span>
-          <span class="svc-tag">Growth Strategy</span>
-          <span class="svc-tag">Engagement</span>
-        </div>
-        <div class="svc-price">Starting from ₹4,999 / month</div>
-      </div>
-      <div class="svc-arrow">→</div>
-    </div>
-    <div class="svc-row reveal">
-      <div class="svc-num">05</div>
-      <div class="svc-name">Event Media Management</div>
-      <div class="svc-right">
-        <div class="svc-tags">
-          <span class="svc-tag">Event Coverage</span>
-          <span class="svc-tag">Live Streaming</span>
-          <span class="svc-tag">Photography</span>
-          <span class="svc-tag">Highlight Reels</span>
-          <span class="svc-tag">Post-production</span>
-        </div>
-        <div class="svc-price">Starting from ₹7,999 / event</div>
-      </div>
-      <div class="svc-arrow">→</div>
-    </div>
-    <div class="svc-row reveal">
-      <div class="svc-num">06</div>
-      <div class="svc-name">Brand Strategy</div>
-      <div class="svc-right">
-        <div class="svc-tags">
-          <span class="svc-tag">Positioning</span>
-          <span class="svc-tag">Visual Identity</span>
-          <span class="svc-tag">Voice & Tone</span>
-          <span class="svc-tag">Guidelines</span>
-        </div>
-        <div class="svc-price">Starting from ₹9,999 / brand</div>
-      </div>
-      <div class="svc-arrow">→</div>
-    </div>
-  </div>
-</section>
+            <div class="stage-card availability-card">
+              <p class="stage-card-label">Current studio status</p>
+              <p class="stage-card-text">
+                Currently building through personal and experimental work. Open for client
+                projects and creative collaborations.
+              </p>
+            </div>
 
-<!-- WORK -->
-<section class="work" id="work">
-  <div class="work-header reveal">
-    <h2 class="work-title">Featured<br><em>work.</em></h2>
-    <a href="#contact" class="btn-ghost">Let's Build Yours →</a>
-  </div>
-  <div class="work-grid">
-    <div class="wc wc-a reveal">
-      <div class="wc-art art-a">
-        <svg class="card-svg" viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-          <circle cx="350" cy="200" r="180" fill="none" stroke="#e8ff47" stroke-width="1"/>
-          <circle cx="350" cy="200" r="120" fill="none" stroke="#e8ff47" stroke-width=".5"/>
-          <line x1="0" y1="200" x2="700" y2="200" stroke="#e8ff47" stroke-width=".5"/>
-          <line x1="350" y1="0" x2="350" y2="400" stroke="#e8ff47" stroke-width=".5"/>
-          <circle cx="350" cy="200" r="30" fill="rgba(232,255,71,.2)"/>
-        </svg>
-      </div>
-      <div class="wc-overlay">
-        <a href="#contact" class="wc-view-btn">Start Similar Project →</a>
-      </div>
-      <div class="wc-inner">
-        <div>
-          <div class="wc-cat">Video Editing · Brand Film</div>
-          <div class="wc-name">NEXUS LAUNCH</div>
-          <div class="wc-sub">Product launch video — 2.4M views</div>
+            <div class="stage-card support-card">
+              <p class="stage-card-label">Best fit</p>
+              <p class="stage-card-text">
+                Content production, visual design, social packaging, and ongoing creative support
+                for modern brands and creators.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="wc wc-b reveal">
-      <div class="wc-art art-b">
-        <svg class="card-svg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-          <rect x="60" y="60" width="120" height="180" rx="3" fill="none" stroke="#e8ff47" stroke-width="1"/>
-          <rect x="220" y="100" width="120" height="140" rx="3" fill="rgba(232,255,71,.1)"/>
-          <circle cx="120" cy="150" r="35" fill="rgba(255,60,60,.3)"/>
-        </svg>
+    </section>
+
+    <section class="services section-surface" id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Services</p>
+          <h2>Creative services built for modern brands, creators, and content teams.</h2>
+          <p class="section-copy">
+            The approach stays practical: clear scope, thoughtful execution, and deliverables that
+            work across content, design, and platform-ready production.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card reveal">
+            <p class="service-number">01</p>
+            <h3>Video Production</h3>
+            <p>
+              Short-form videos, reels, launch pieces, and polished visual outputs built around
+              clarity, rhythm, and audience attention.
+            </p>
+            <div class="service-tags">
+              <span>Reels</span>
+              <span>Brand Films</span>
+              <span>Motion Assist</span>
+            </div>
+          </article>
+
+          <article class="service-card reveal">
+            <p class="service-number">02</p>
+            <h3>Graphic Design</h3>
+            <p>
+              Thumbnails, campaign creatives, layout systems, and brand assets that make every
+              touchpoint feel more cohesive and considered.
+            </p>
+            <div class="service-tags">
+              <span>Thumbnails</span>
+              <span>Posters</span>
+              <span>Brand Assets</span>
+            </div>
+          </article>
+
+          <article class="service-card reveal">
+            <p class="service-number">03</p>
+            <h3>Content Management</h3>
+            <p>
+              Planning, packaging, and workflow support to keep ideas moving from rough concept to
+              published content without losing momentum.
+            </p>
+            <div class="service-tags">
+              <span>Planning</span>
+              <span>Publishing</span>
+              <span>Asset Flow</span>
+            </div>
+          </article>
+
+          <article class="service-card reveal">
+            <p class="service-number">04</p>
+            <h3>Social Media Support</h3>
+            <p>
+              Platform-aware support for creators and small brands that need a more consistent,
+              more intentional presence across channels.
+            </p>
+            <div class="service-tags">
+              <span>Instagram</span>
+              <span>YouTube</span>
+              <span>LinkedIn</span>
+            </div>
+          </article>
+
+          <article class="service-card reveal">
+            <p class="service-number">05</p>
+            <h3>Event Media Coverage</h3>
+            <p>
+              Capture planning, recap production, and visual storytelling for launches, events, and
+              community-driven moments.
+            </p>
+            <div class="service-tags">
+              <span>Coverage</span>
+              <span>Highlights</span>
+              <span>Recaps</span>
+            </div>
+          </article>
+
+          <article class="service-card reveal">
+            <p class="service-number">06</p>
+            <h3>Brand Support</h3>
+            <p>
+              Creative direction and visual refinement for teams that already have momentum but
+              need the final output to feel sharper, more premium, and more consistent.
+            </p>
+            <div class="service-tags">
+              <span>Positioning</span>
+              <span>Visual Consistency</span>
+              <span>Creative QA</span>
+            </div>
+          </article>
+        </div>
       </div>
-      <div class="wc-overlay">
-        <a href="#contact" class="wc-view-btn">Get This Look →</a>
+    </section>
+
+    <section class="work" id="work">
+      <div class="container">
+        <div class="section-head split-head reveal">
+          <div>
+            <p class="eyebrow">Featured Work</p>
+            <h2>Selected creative directions shaped around content, visuals, and storytelling.</h2>
+          </div>
+          <div class="portfolio-note">
+            The public portfolio is still growing through personal and experimental work. These are
+            realistic sample directions that reflect the studio's broader creative range, with
+            private previews available during client conversations.
+          </div>
+        </div>
+
+        <div class="work-grid">
+          <article class="project-card project-anime reveal">
+            <div class="project-thumb">
+              <span class="project-chip">Sample direction</span>
+              <div class="project-overlay">
+                <p class="project-type">Visual Storytelling</p>
+                <h3>Anime Edit - Beat Sync</h3>
+                <p>
+                  A stylized short-form concept built around rhythm, motion, and visual pacing,
+                  designed to turn familiar footage into more memorable content.
+                </p>
+                <a class="project-link" href="https://www.youtube.com/@Noxir_x" target="_blank">Watch Project</a>
+              </div>
+            </div>
+            <div class="project-meta">Preview available during project inquiry</div>
+          </article>
+
+          <article class="project-card project-reel reveal">
+            <div class="project-thumb">
+              <span class="project-chip">Sample direction</span>
+              <div class="project-overlay">
+                <p class="project-type">Creative Direction</p>
+                <h3>Cinematic Reel Edit</h3>
+                <p>
+                  A cleaner launch-ready piece with stronger pacing, refined typography, and a more
+                  elevated visual tone for founders, creators, or brand campaigns.
+                </p>
+                <a class="project-link" href="https://www.instagram.com/kar_studio.fx/?__pwa=1" target="_blank">Watch Project</a>
+              </div>
+            </div>
+            <div class="project-meta">Well suited to launches, founder stories, and personal brands</div>
+          </article>
+
+          <article class="project-card project-grade reveal">
+            <div class="project-thumb">
+              <span class="project-chip">Sample direction</span>
+              <div class="project-overlay">
+                <p class="project-type">Content Production</p>
+                <h3>Before / After Color Grade</h3>
+                <p>
+                  A simple visual comparison showing how tone, balance, and finishing choices can
+                  reshape the feel of content without changing the core story.
+                </p>
+                <<a class="project-link" href="https://www.instagram.com/kar_studio.fx/?__pwa=1" target="_blank">Watch Project</a></a>
+              </div>
+            </div>
+            <div class="project-meta">Useful for brands and creators who want a more polished visual finish</div>
+          </article>
+        </div>
       </div>
-      <div class="wc-inner">
-        <div>
-          <div class="wc-cat">Graphic Design · Identity</div>
-          <div class="wc-name">ZARA BLOOM</div>
-          <div class="wc-sub">Fashion brand identity system</div>
+    </section>
+
+    <section class="why section-surface" id="why">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Why Choose Us</p>
+          <h2>Not just editing - a complete creative support system for modern content.</h2>
+          <p class="section-copy">
+            KAR Studios is built to feel lean, direct, and dependable - closer than a large agency,
+            but broad enough to support content, design, production, and creative direction in one
+            place.
+          </p>
+        </div>
+
+        <div class="why-grid">
+          <article class="why-card reveal">
+            <p class="why-number">01</p>
+            <h3>Creative thinking with intent</h3>
+            <p>
+              Every visual choice is there to support the idea, strengthen the story, and keep the
+              work feeling clear rather than excessive.
+            </p>
+          </article>
+
+          <article class="why-card reveal">
+            <p class="why-number">02</p>
+            <h3>Cleaner communication</h3>
+            <p>
+              Clear scope, revision expectations, and direct contact make the process simpler,
+              lighter, and easier to trust.
+            </p>
+          </article>
+
+          <article class="why-card reveal">
+            <p class="why-number">03</p>
+            <h3>Social-ready output</h3>
+            <p>
+              Content is shaped for modern viewing habits, with attention to format, pacing, hooks,
+              and visual readability.
+            </p>
+          </article>
+
+          <article class="why-card reveal">
+            <p class="why-number">04</p>
+            <h3>Premium without excess</h3>
+            <p>
+              The output stays refined and performance-conscious, avoiding unnecessary noise while
+              keeping the presentation premium.
+            </p>
+          </article>
+
+          <article class="why-card why-card-wide reveal">
+            <p class="why-number">Studio note</p>
+            <h3>Honest positioning, clear work, and no borrowed credibility.</h3>
+            <p>
+              The studio is presented as it is: growing, focused, and open to client work, with a
+              standard of presentation that still feels sharp, minimal, and client-ready.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container contact-grid">
+        <div class="contact-copy reveal">
+          <p class="eyebrow">Contact</p>
+          <h2>Tell us what you want to create, launch, or improve.</h2>
+          <p class="section-copy">
+            Whether you need a campaign asset, stronger content, cleaner visuals, or ongoing
+            creative support, send the brief and KAR Studios will reply with the most practical
+            next step.
+          </p>
+
+          <div class="contact-panel">
+            <div class="contact-item">
+              <span class="contact-label">Email</span>
+              <a href="mailto:hello@karstudios.in">hello@karstudios.in</a>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">WhatsApp</span>
+              <a href="https://wa.me/919876543210">+91 98765 43210</a>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Based</span>
+              <span>India / Available worldwide</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Response</span>
+              <span>Usually within 24 hours</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-form-wrap reveal">
+          <form class="contact-form" id="contactForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="name">Your name *</label>
+                <input
+                  class="form-input"
+                  id="name"
+                  type="text"
+                  name="name"
+                  placeholder="Rahul Sharma"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Email address *</label>
+                <input
+                  class="form-input"
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="hello@yourbrand.com"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="phone">Phone / WhatsApp</label>
+                <input
+                  class="form-input"
+                  id="phone"
+                  type="tel"
+                  name="phone"
+                  placeholder="+91 98765 43210"
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="service">Service needed *</label>
+                <select class="form-select form-input" id="service" name="service" required>
+                  <option value="" disabled selected>Choose a service</option>
+                  <option>Video Production</option>
+                  <option>Graphic Design</option>
+                  <option>Content Management</option>
+                  <option>Social Media Support</option>
+                  <option>Event Media Coverage</option>
+                  <option>Brand Support</option>
+                  <option>Full Package</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="budget">Budget range</label>
+              <select class="form-select form-input" id="budget" name="budget">
+                <option value="" disabled selected>Select budget range</option>
+                <option>Under Rs. 5,000</option>
+                <option>Rs. 5,000 - Rs. 15,000</option>
+                <option>Rs. 15,000 - Rs. 50,000</option>
+                <option>Rs. 50,000+</option>
+                <option>Let's discuss</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="message">Tell us about your project *</label>
+              <textarea
+                class="form-textarea"
+                id="message"
+                name="message"
+                placeholder="What are you building, who is it for, and what kind of content, design, or creative support do you need?"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-note">We reply within 24 hours, usually sooner.</div>
+
+            <button type="submit" class="btn-submit">
+              <span>Send Message</span>
+              <span class="btn-submit-arrow">&rarr;</span>
+            </button>
+          </form>
+
+          <div class="form-success" id="formSuccess">
+            <div class="form-success-icon">Thank you</div>
+            <div class="form-success-msg">Message received.</div>
+            <div class="form-success-sub">
+              Your brief has been submitted successfully. KAR Studios will be in touch soon.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="footer-brand" href="#top">KAR<span>.</span></a>
+        <p class="footer-copy">
+          A creative studio for content production, design support, and polished visual work for
+          creators and modern brands.
+        </p>
+      </div>
+
+      <div>
+        <p class="footer-heading">Sections</p>
+        <div class="footer-links">
+          <a href="#services">Services</a>
+          <a href="#work">Featured Work</a>
+          <a href="#why">Why Choose Us</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer-heading">Reach Out</p>
+        <div class="footer-links">
+          <a href="mailto:hello@karstudios.in">hello@karstudios.in</a>
+          <a href="https://wa.me/919876543210">WhatsApp</a>
+          <span>India / Remote-friendly</span>
         </div>
       </div>
     </div>
-    <div class="wc wc-c reveal">
-      <div class="wc-art art-c">
-        <svg class="card-svg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-          <polygon points="200,30 370,270 30,270" fill="none" stroke="#3caaff" stroke-width="1"/>
-          <polygon points="200,90 310,270 90,270" fill="rgba(60,170,255,.1)"/>
-          <circle cx="200" cy="200" r="50" fill="none" stroke="#3caaff" stroke-width=".5"/>
-        </svg>
-      </div>
-      <div class="wc-overlay">
-        <a href="#contact" class="wc-view-btn">Grow My Socials →</a>
-      </div>
-      <div class="wc-inner">
-        <div>
-          <div class="wc-cat">Social Media · Campaign</div>
-          <div class="wc-name">URBAN EATS</div>
-          <div class="wc-sub">6-month social strategy — 300% growth</div>
-        </div>
-      </div>
+
+    <div class="container footer-base">
+      <span>&copy; 2026 KAR Studios. All rights reserved.</span>
+      <span>Built for modern creative work.</span>
     </div>
-    <div class="wc wc-d reveal">
-      <div class="wc-art art-d">
-        <svg class="card-svg" viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-          <line x1="0" y1="400" x2="700" y2="0" stroke="#e8ff47" stroke-width=".5"/>
-          <line x1="0" y1="0" x2="700" y2="400" stroke="#e8ff47" stroke-width=".5"/>
-          <rect x="250" y="100" width="200" height="200" rx="0" fill="none" stroke="#e8ff47" stroke-width="1"/>
-          <rect x="290" y="140" width="120" height="120" fill="rgba(232,255,71,.08)"/>
-          <circle cx="350" cy="200" r="40" fill="none" stroke="rgba(255,60,60,.6)" stroke-width="1.5"/>
-        </svg>
-      </div>
-      <div class="wc-overlay">
-        <a href="#contact" class="wc-view-btn">Book Event Coverage →</a>
-      </div>
-      <div class="wc-inner">
-        <div>
-          <div class="wc-cat">Event Media · Corporate</div>
-          <div class="wc-name">SUMMIT 2024</div>
-          <div class="wc-sub">Tech conference — full event media coverage</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  </footer>
 
-<!-- PROCESS -->
-<section class="process" id="process">
-  <div class="process-grid">
-    <div class="process-left reveal">
-      <div class="section-tag">How we work</div>
-      <h2 class="reel-heading" style="font-size: clamp(2.5rem, 4vw, 4.5rem);">Craft meets<br><em>strategy.</em></h2>
-      <div class="process-steps">
-        <div class="ps">
-          <div class="ps-num">01</div>
-          <div><div class="ps-name">Discovery Call</div><p class="ps-desc">We start by listening — understanding your goals, audience, brand tone, and what success looks like for you. No templates, no assumptions.</p></div>
-        </div>
-        <div class="ps">
-          <div class="ps-num">02</div>
-          <div><div class="ps-name">Strategy & Brief</div><p class="ps-desc">We map out a tailored creative plan — clear deliverables, realistic timelines, and platform-specific direction aligned to your vision and budget.</p></div>
-        </div>
-        <div class="ps">
-          <div class="ps-num">03</div>
-          <div><div class="ps-name">Create & Craft</div><p class="ps-desc">Our team gets to work — editing, designing, shooting, writing — with regular previews so nothing comes as a surprise. You stay in control.</p></div>
-        </div>
-        <div class="ps">
-          <div class="ps-num">04</div>
-          <div><div class="ps-name">Deliver & Scale</div><p class="ps-desc">We deliver final assets, help publish them, track performance, and iterate — building momentum that compounds every month.</p></div>
-        </div>
-      </div>
-    </div>
-    <div class="process-right reveal">
-      <div class="process-visual">
-        <div class="pv-ring pv-r1"></div>
-        <div class="pv-ring pv-r2"></div>
-        <div class="pv-ring pv-r3"></div>
-        <div class="pv-center">K</div>
-        <div class="pv-label">KAR Studios</div>
-        <div class="pv-sub">Visual · Media · Creative</div>
-      </div>
-    </div>
-  </div>
-</section>
+  <script>
+    const nav = document.getElementById("mainNav");
+    const navToggle = document.getElementById("navToggle");
+    const siteNav = document.getElementById("siteNav");
 
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-  <div class="testimonials-header reveal">
-    <div class="section-tag" style="justify-content: center;">Client love</div>
-    <h2 class="reel-heading" style="font-size: clamp(2rem, 3.5vw, 3.5rem); text-align: center; margin-bottom: 0;">Real results. Real clients.</h2>
-  </div>
-  <div class="testimonials-grid">
-    <div class="test-card reveal">
-      <div class="test-stars">★★★★★</div>
-      <p class="test-quote">"KAR Studios completely transformed our social media. In just three months our engagement tripled and our brand finally looked as good as our product actually is."</p>
-      <div class="test-author">
-        <div class="test-avatar av-red">RK</div>
-        <div>
-          <div class="test-name">Rahul Krishnamurthy</div>
-          <div class="test-handle">@rahulk.eats</div>
-          <div class="test-role">Founder, Urban Eats Café</div>
-        </div>
-      </div>
-    </div>
-    <div class="test-card reveal">
-      <div class="test-stars">★★★★★</div>
-      <p class="test-quote">"The launch video KAR edited for us hit 2.4 million views organically. Best investment we made all year. The colour grading and pacing was absolutely cinema-level."</p>
-      <div class="test-author">
-        <div class="test-avatar av-lime">SP</div>
-        <div>
-          <div class="test-name">Sneha Pillai</div>
-          <div class="test-handle">@sneha.nexustech</div>
-          <div class="test-role">Marketing Head, Nexus Labs</div>
-        </div>
-      </div>
-    </div>
-    <div class="test-card reveal">
-      <div class="test-stars">★★★★★</div>
-      <p class="test-quote">"Hired KAR for our annual summit coverage. The highlight reel they delivered was so professional that clients actually asked us where we found the production house. Incredible team."</p>
-      <div class="test-author">
-        <div class="test-avatar av-blue">AM</div>
-        <div>
-          <div class="test-name">Arjun Mehta</div>
-          <div class="test-handle">@arjunmehta_</div>
-          <div class="test-role">CEO, Summit Co.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    window.addEventListener(
+      "scroll",
+      () => {
+        nav.classList.toggle("is-scrolled", window.scrollY > 12);
+      },
+      { passive: true }
+    );
 
-<!-- CLIENTS -->
-<div class="clients reveal">
-  <div class="clients-label">Brands we've worked with</div>
-  <div class="clients-row">
-    <div class="client-item">NovaTech</div>
-    <div class="client-item">Zara Bloom</div>
-    <div class="client-item">Urban Eats</div>
-    <div class="client-item">Summit Co.</div>
-    <div class="client-item">Nexus Labs</div>
-    <div class="client-item">PrimeShot</div>
-    <div class="client-item">Kode Media</div>
-  </div>
-</div>
+    navToggle.addEventListener("click", () => {
+      const isOpen = siteNav.classList.toggle("is-open");
+      navToggle.classList.toggle("is-open", isOpen);
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+      document.body.classList.toggle("menu-open", isOpen);
+    });
 
-<!-- CONTACT FORM -->
-<section class="contact-section" id="contact">
-  <div class="contact-left reveal">
-    <div class="section-tag">Get in touch</div>
-    <h2 class="contact-heading">Let's build<br>your <em>brand.</em></h2>
-    <p class="contact-body">Ready to level up your content? Tell us about your project and we'll get back to you within 24 hours with a custom plan.</p>
-    <div class="contact-info">
-      <div class="contact-info-item">
-        <span class="ci-label">Email</span>
-        <a href="mailto:hello@karstudios.in" class="ci-val">hello@karstudios.in</a>
-      </div>
-      <div class="contact-info-item">
-        <span class="ci-label">Phone</span>
-        <a href="tel:+919876543210" class="ci-val">+91 98765 43210</a>
-      </div>
-      <div class="contact-info-item">
-        <span class="ci-label">DM</span>
-        <a href="#" class="ci-val">@karstudios.in</a>
-      </div>
-      <div class="contact-info-item">
-        <span class="ci-label">Based</span>
-        <span class="ci-val">India · Available worldwide</span>
-      </div>
-    </div>
-  </div>
-  <div class="contact-right reveal">
-    <form class="contact-form" id="contactForm">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Your name *</label>
-          <input class="form-input" type="text" name="name" placeholder="Rahul Sharma" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email address *</label>
-          <input class="form-input" type="email" name="email" placeholder="hello@yourbrand.com" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Phone / WhatsApp</label>
-          <input class="form-input" type="tel" name="phone" placeholder="+91 98765 43210">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Service needed *</label>
-          <select class="form-select form-input" name="service" required>
-            <option value="" disabled selected>Choose a service</option>
-            <option>Video Editing</option>
-            <option>Graphic Designing</option>
-            <option>Content Management</option>
-            <option>Social Media Management</option>
-            <option>Event Media Management</option>
-            <option>Brand Strategy</option>
-            <option>Full Package</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Budget range</label>
-        <select class="form-select form-input" name="budget">
-          <option value="" disabled selected>Select budget range</option>
-          <option>Under ₹5,000</option>
-          <option>₹5,000 – ₹15,000</option>
-          <option>₹15,000 – ₹50,000</option>
-          <option>₹50,000+</option>
-          <option>Let's discuss</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tell us about your project *</label>
-        <textarea class="form-textarea" name="message" placeholder="Describe your brand, goals, and what you need. The more detail, the better we can help you." required></textarea>
-      </div>
-      <div class="form-note">We reply within 24 hours — usually much faster.</div>
-      <button type="submit" class="btn-submit">
-        <span>Send Message</span>
-        <span class="btn-submit-arrow">→</span>
-      </button>
-    </form>
-    <div class="form-success" id="formSuccess">
-      <div class="form-success-icon">✓</div>
-      <div class="form-success-msg">Message received!</div>
-      <div class="form-success-sub">We'll be in touch within 24 hours. Check your inbox.</div>
-    </div>
-  </div>
-</section>
+    siteNav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        siteNav.classList.remove("is-open");
+        navToggle.classList.remove("is-open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("menu-open");
+      });
+    });
 
-<!-- CTA BANNER -->
-<section class="cta">
-  <div class="reveal">
-    <h2 class="cta-heading">READY TO<br>STAND OUT?</h2>
-  </div>
-  <div class="cta-right reveal">
-    <p class="cta-body">Stop blending in. KAR Studios builds brands that own the feed — cinematic, strategic, unstoppable.</p>
-    <a href="#contact" class="btn-dark">Let's Build Your Brand →</a>
-    <div class="cta-contact">Or WhatsApp us at <a href="https://wa.me/919876543210">+91 98765 43210</a></div>
-  </div>
-</section>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-top">
-    <div>
-      <div class="footer-brand-name">KAR<span>.</span></div>
-      <p class="footer-tagline">Video editing, graphic design,<br>content & social media management —<br>all under one roof.<br><br>India · Available worldwide</p>
-    </div>
-    <div>
-      <div class="footer-col-head">Services</div>
-      <ul class="footer-links">
-        <li><a href="#services">Video Editing</a></li>
-        <li><a href="#services">Graphic Design</a></li>
-        <li><a href="#services">Content Management</a></li>
-        <li><a href="#services">Social Media</a></li>
-        <li><a href="#services">Event Media</a></li>
-        <li><a href="#services">Brand Strategy</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-col-head">Studio</div>
-      <ul class="footer-links">
-        <li><a href="#about">About us</a></li>
-        <li><a href="#work">Our work</a></li>
-        <li><a href="#process">Process</a></li>
-        <li><a href="#contact">Careers</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-col-head">Connect</div>
-      <ul class="footer-links">
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">YouTube</a></li>
-        <li><a href="#">LinkedIn</a></li>
-        <li><a href="https://wa.me/919876543210">WhatsApp</a></li>
-        <li><a href="mailto:hello@karstudios.in">hello@karstudios.in</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <div class="footer-copy">© 2026 KAR Studios. All rights reserved.</div>
-    <div class="footer-copy">Made with obsession.</div>
-  </div>
-</footer>
+    document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
+  </script>
 
-<script>
-/* ── CURSOR ── */
-(function(){
-  const cur = document.getElementById('cur');
-  const ring = document.getElementById('cur-ring');
-  if (!cur) return;
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove', e => {
-    mx=e.clientX; my=e.clientY;
-    cur.style.left=mx+'px'; cur.style.top=my+'px';
-  });
-  (function tick(){
-    rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
-    requestAnimationFrame(tick);
-  })();
-})();
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      addDoc,
+      collection,
+      getFirestore,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ── NAV ── */
-const nav = document.getElementById('mainNav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 60);
-}, { passive: true });
-
-/* ── MOBILE MENU ── */
-const toggle = document.getElementById('navToggle');
-const mobileMenu = document.getElementById('mobileMenu');
-toggle.addEventListener('click', () => {
-  toggle.classList.toggle('open');
-  mobileMenu.classList.toggle('open');
-  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
-});
-function closeMobile() {
-  toggle.classList.remove('open');
-  mobileMenu.classList.remove('open');
-  document.body.style.overflow = '';
-}
-mobileMenu.addEventListener('click', e => {
-  if (e.target === mobileMenu) closeMobile();
-});
-
-/* ── SCROLL REVEAL ── */
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const d = parseInt(e.target.dataset.d || 0);
-      setTimeout(() => e.target.classList.add('up'), d);
-      obs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.reveal').forEach((el, i) => {
-  el.dataset.d = (i % 4) * 80;
-  obs.observe(el);
-});
-
-/* ── VIDEO LIGHTBOX ── */
-const REEL_URL = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
-// Replace the URL above with your actual YouTube embed link, e.g.:
-// 'https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1'
-
-function openReel() {
-  const lb = document.getElementById('lightbox');
-  document.getElementById('reelFrame').src = REEL_URL;
-  lb.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-function closeReel() {
-  const lb = document.getElementById('lightbox');
-  document.getElementById('reelFrame').src = '';
-  lb.classList.remove('active');
-  document.body.style.overflow = '';
-}
-document.getElementById('lightbox').addEventListener('click', e => {
-  if (e.target === document.getElementById('lightbox')) closeReel();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReel(); });
-
-/* ── All other JS above is untouched ── */
-</script>
-
-<!-- ═══════════════════════════════════════════════════════════
-     FIREBASE v10 — Modular SDK (loaded as ES modules via CDN)
-     ═══════════════════════════════════════════════════════════ -->
-<script type="module">
-
-  /* ─────────────────────────────────────────────────────────
-     STEP 1 ▸ REPLACE THE VALUES BELOW WITH YOUR FIREBASE
-     PROJECT CREDENTIALS.
-     Go to: Firebase Console → Project Settings → Your Apps
-     → Web App → SDK setup and configuration → Config object.
-     ───────────────────────────────────────────────────────── */
-  const firebaseConfig = {
-    apiKey:            "YOUR_API_KEY",
-    authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId:         "YOUR_PROJECT_ID",
-    storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId:             "YOUR_APP_ID"
-  };
-  /* ───────────────────────────────────────────────────────── */
-
-  /* ─── Import Firebase modules from CDN ─── */
-  import { initializeApp }              from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection,
-           addDoc, serverTimestamp }    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  /* ─── Initialize Firebase ─── */
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-
-  /* ─── DOM References ─── */
-  const form        = document.getElementById("contactForm");
-  const successBox  = document.getElementById("formSuccess");
-  const submitBtn   = form.querySelector(".btn-submit");
-  const btnLabel    = submitBtn.querySelector("span:first-child");
-  const btnArrow    = submitBtn.querySelector(".btn-submit-arrow");
-
-  /* ─── Helper: set button state ─── */
-  function setButtonState(state) {
-    if (state === "loading") {
-      submitBtn.disabled  = true;
-      submitBtn.style.opacity = "0.7";
-      btnLabel.textContent    = "Sending...";
-      btnArrow.textContent    = "↻";
-      btnArrow.style.animation = "spin 1s linear infinite";
-    } else if (state === "idle") {
-      submitBtn.disabled  = false;
-      submitBtn.style.opacity = "1";
-      btnLabel.textContent    = "Send Message";
-      btnArrow.textContent    = "→";
-      btnArrow.style.animation = "";
-    }
-  }
-
-  /* ─── Show inline error message ─── */
-  function showError(message) {
-    // Remove any existing error banner
-    const prev = form.querySelector(".form-error-banner");
-    if (prev) prev.remove();
-
-    const banner = document.createElement("div");
-    banner.className = "form-error-banner";
-    banner.style.cssText = [
-      "background: rgba(255,60,60,0.12)",
-      "border: 1px solid rgba(255,60,60,0.4)",
-      "color: #ff6b6b",
-      "font-size: .78rem",
-      "letter-spacing: .05em",
-      "padding: .85rem 1rem",
-      "margin-top: .5rem",
-      "line-height: 1.5"
-    ].join(";");
-    banner.textContent = "⚠ " + message;
-    submitBtn.insertAdjacentElement("afterend", banner);
-
-    // Auto-remove after 6 seconds
-    setTimeout(() => banner.remove(), 6000);
-  }
-
-  /* ─── Form Submit Handler ─── */
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    setButtonState("loading");
-
-    /* ── Collect all field values ── */
-    const data = {
-      name:      form.name.value.trim(),
-      email:     form.email.value.trim(),
-      phone:     form.phone.value.trim()    || "",
-      service:   form.service.value         || "",
-      budget:    form.budget.value          || "",
-      message:   form.message.value.trim(),
-      status:    "new",                          // lead status for your CRM workflow
-      createdAt: serverTimestamp()               // Firestore server-side timestamp
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwKZxF2RRbMsL-KNOuP6xSGWiIFzecp0M",
+      authDomain: "kar-studios.firebaseapp.com",
+      projectId: "kar-studios",
+      storageBucket: "kar-studios.firebasestorage.app",
+      messagingSenderId: "826403319872",
+      appId: "1:826403319872:web:d4137a46b7d00e9c396fa5"
     };
 
-    try {
-      /* ── Write to Firestore collection "leads" ── */
-      const docRef = await addDoc(collection(db, "leads"), data);
-      console.log("Lead saved — Document ID:", docRef.id);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-      /* ── Show success UI ── */
-      form.style.display   = "none";
-      successBox.classList.add("show");
+    const form = document.getElementById("contactForm");
+    const successBox = document.getElementById("formSuccess");
+    const submitBtn = form.querySelector(".btn-submit");
+    const btnLabel = submitBtn.querySelector("span:first-child");
+    const btnArrow = submitBtn.querySelector(".btn-submit-arrow");
 
-      /* ── Reset form in the background (in case user returns) ── */
-      form.reset();
-
-    } catch (err) {
-      /* ── Error handling ── */
-      console.error("Firestore write failed:", err);
-
-      let userMessage = "Something went wrong. Please try again or email us directly.";
-
-      // Surface specific Firebase error codes if useful
-      if (err.code === "permission-denied") {
-        userMessage = "Submission blocked by security rules. Please contact us directly at hello@karstudios.in";
-      } else if (err.code === "unavailable") {
-        userMessage = "Network issue — please check your connection and try again.";
+    function setButtonState(state) {
+      if (state === "loading") {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = "0.7";
+        btnLabel.textContent = "Sending...";
+        btnArrow.textContent = "...";
+        btnArrow.style.animation = "";
+      } else if (state === "idle") {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+        btnLabel.textContent = "Send Message";
+        btnArrow.innerHTML = "&rarr;";
+        btnArrow.style.animation = "";
       }
-
-      showError(userMessage);
-      setButtonState("idle");
     }
-  });
 
-</script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    function showError(message) {
+      const prev = form.querySelector(".form-error-banner");
+      if (prev) prev.remove();
 
-// Your Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyCwKZxF2RRbMsL-KNOuP6xSGWiIFzecp0M",
-  authDomain: "kar-studios.firebaseapp.com",
-  projectId: "kar-studios",
-  storageBucket: "kar-studios.firebasestorage.app",
-  messagingSenderId: "826403319872",
-  appId: "1:826403319872:web:d4137a46b7d00e9c396fa5"
-};
+      const banner = document.createElement("div");
+      banner.className = "form-error-banner";
+      banner.style.cssText = [
+        "background: rgba(183, 64, 42, 0.08)",
+        "border: 1px solid rgba(183, 64, 42, 0.22)",
+        "color: #7b2a1d",
+        "font-size: 0.82rem",
+        "line-height: 1.6",
+        "padding: 0.9rem 1rem",
+        "border-radius: 18px",
+        "margin-top: 0.9rem"
+      ].join(";");
+      banner.textContent = "Warning: " + message;
+      submitBtn.insertAdjacentElement("afterend", banner);
+      setTimeout(() => banner.remove(), 6000);
+    }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      setButtonState("loading");
 
-// Form handling
-const form = document.getElementById("contactForm");
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim() || "",
+        service: form.service.value || "",
+        budget: form.budget.value || "",
+        message: form.message.value.trim(),
+        status: "new",
+        createdAt: serverTimestamp()
+      };
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+      try {
+        await addDoc(collection(db, "leads"), data);
+        form.style.display = "none";
+        successBox.classList.add("show");
+        form.reset();
+      } catch (err) {
+        console.error("Firestore write failed:", err);
+        let userMessage = "Something went wrong. Please try again or email us directly.";
 
-  const formData = new FormData(form);
+        if (err.code === "permission-denied") {
+          userMessage =
+            "Submission blocked by security rules. Please contact us directly at hello@karstudios.in";
+        } else if (err.code === "unavailable") {
+          userMessage = "Network issue. Please check your connection and try again.";
+        }
 
-  const data = {
-    name: formData.get("name"),
-    email: formData.get("email"),
-    phone: formData.get("phone"),
-    service: formData.get("service"),
-    budget: formData.get("budget"),
-    message: formData.get("message"),
-    createdAt: new Date(),
-    status: "new"
-  };
-
-  try {
-    await addDoc(collection(db, "leads"), data);
-
-    alert("Submitted successfully 🚀");
-    form.reset();
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-});
-</script>
+        showError(userMessage);
+        setButtonState("idle");
+      }
+    });
+  </script>
 </body>
 </html>
